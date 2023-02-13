@@ -16,18 +16,20 @@ public class GamePanel extends JPanel implements ActionListener{
 	static final int UNIT_SIZE = 25;
 	static final int GAME_UNITS = (WIDTH * HEIGHT)/UNIT_SIZE;
 	static final int DELAY = 75;
+	static int foodEaten = 0;
 	final int x[] = new int[GAME_UNITS];
 	final int y[] = new int[GAME_UNITS];
 	int bodyParts = 5;
-	int foodEaten;
 	int foodX;
 	int foodY;
 	char direction = 'R';
 	boolean running = false;
 	Timer timer;
 	Random random;
+	ScorePanel scorePanel;
 	
-	GamePanel() {
+	GamePanel(ScorePanel scorePanel) {
+		this.scorePanel = scorePanel;
 		random = new Random();
 		this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		this.setBackground(new Color(6, 0, 71));
@@ -45,16 +47,20 @@ public class GamePanel extends JPanel implements ActionListener{
 		super.paintComponent(g);
 		draw(g);
 	}
+	public int getFoodEaten() {
+		return foodEaten;
+	}
 	public void draw(Graphics g) {
 		
 		if (running) {
+			/*
 			for(int i = 0; i < HEIGHT/UNIT_SIZE; i++) {
 				g.drawLine(i*UNIT_SIZE, 0, i*UNIT_SIZE, HEIGHT);
 			}
 			for(int i = 0; i < WIDTH/UNIT_SIZE; i++) {
 				g.drawLine(0, i*UNIT_SIZE, WIDTH, i*UNIT_SIZE);
-			}
-			g.setColor(new Color(255, 95, 158));
+			}*/
+			g.setColor(Color.PINK);
 			g.fillOval(foodX, foodY, UNIT_SIZE, UNIT_SIZE);
 			
 			for (int i = 0; i < bodyParts; i++) {
@@ -132,7 +138,7 @@ public class GamePanel extends JPanel implements ActionListener{
 	}
 	public void gameOver(Graphics g) {
 		//game over text
-		g.setColor(Color.red);
+		g.setColor(new Color(255, 95, 158));
 		g.setFont(new Font("Ink Free", Font.BOLD, 75));
 		FontMetrics metrics = getFontMetrics(g.getFont());
 		g.drawString("Game Over!", (WIDTH-metrics.stringWidth("Game Over!"))/2,HEIGHT/2);
@@ -146,6 +152,7 @@ public class GamePanel extends JPanel implements ActionListener{
 			checkCollision();
 		}
 		repaint();
+		scorePanel.repaint();
 	}
 	
 	public class MyKeyAdapter extends KeyAdapter{
