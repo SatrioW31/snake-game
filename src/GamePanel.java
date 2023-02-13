@@ -16,7 +16,7 @@ public class GamePanel extends JPanel implements ActionListener{
 	static final int DELAY = 75;
 	final int x[] = new int[GAME_UNITS];
 	final int y[] = new int[GAME_UNITS];
-	int bodyParts = 3;
+	int bodyParts = 5;
 	int foodEaten;
 	int foodX;
 	int foodY;
@@ -54,16 +54,68 @@ public class GamePanel extends JPanel implements ActionListener{
 		g.setColor(new Color(255, 95, 158));
 		g.fillOval(foodX, foodY, UNIT_SIZE, UNIT_SIZE);
 		
+		for (int i = 0; i < bodyParts; i++) {
+			if (i == 0) {
+				g.setColor(new Color(233, 0, 100));
+				g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
+			} else {
+				g.setColor(new Color(179, 0, 94));
+				g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
+			}
+		}
+		
 	}
 	public void generateFood() {
 		foodX = random.nextInt((int)(WIDTH/UNIT_SIZE))*UNIT_SIZE;
 		foodY = random.nextInt((int)(HEIGHT/UNIT_SIZE))*UNIT_SIZE;
 	}
+	public void move() {
+		for(int i = bodyParts; i>0; i--) {
+			x[i] = x[i-1];
+			y[i] = y[i-1];
+		}
+		
+		switch(direction) {
+		case 'U':
+			y[0] = y[0] - UNIT_SIZE;
+			break;
+		case 'D':
+			y[0] = y[0] + UNIT_SIZE;
+			break;
+		case 'L':
+			x[0] = x[0] - UNIT_SIZE;
+			break;
+		case 'R':
+			x[0] = x[0] + UNIT_SIZE;
+			break;
+		}
+	}
 	public void checkFood() {
 		
 	}
 	public void checkCollision() {
-		
+		//check if head collides with the body
+		for (int i = bodyParts; i > 0; i--) {
+			if (x[i] == x[0] && y[i] == y[0]) {
+				running = false;
+			}
+		}
+		//check if head touch left border
+		if(x[0] < 0) {
+			running = false;
+		}
+		//check if head touch right border
+		if(x[0] > WIDTH) {
+			running = false;
+		}
+		//check if head touch top border
+		if(y[0] < 0) {
+			running = false;
+		}
+		//check if head touch bottom border
+		if(y[0] > HEIGHT) {
+			running = false;
+		}
 	}
 	public void gameOver(Graphics g) {
 		
@@ -71,7 +123,12 @@ public class GamePanel extends JPanel implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
-		
+		if(running) {
+			move();
+			checkFood();
+			checkCollision();
+		}
+		repaint();
 	}
 	
 	public class MyKeyAdapter extends KeyAdapter{
