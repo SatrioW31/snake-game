@@ -20,10 +20,12 @@ public class ScorePanel extends JPanel{
 		super.paintComponent(g);
 		draw(g);
 	}
+	
 	public void draw(Graphics g) {
 		g.setColor(new Color(6, 0, 71));
 		g.setFont(new Font("Ink Free", Font.BOLD, 20));
 		FontMetrics metrics = getFontMetrics(g.getFont());
 		g.drawString("Score: " + GamePanel.foodEaten, (GamePanel.WIDTH-metrics.stringWidth("Score: " + GamePanel.foodEaten))/2,(HEIGHT/2)+5);
 	}
+	
 }
