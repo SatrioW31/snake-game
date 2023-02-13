@@ -4,7 +4,7 @@ A classic snake game implemented in Java.
 
 ## Preview
 
-![Snake Game Screenshot](image.png)
+![Snake Game Screenshot](image1.png)
 
 ## Getting Started
 
