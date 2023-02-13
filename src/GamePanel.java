@@ -1,5 +1,7 @@
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.event.*;
 import javax.swing.*;
@@ -45,23 +47,27 @@ public class GamePanel extends JPanel implements ActionListener{
 	}
 	public void draw(Graphics g) {
 		
-		for(int i = 0; i < HEIGHT/UNIT_SIZE; i++) {
-			g.drawLine(i*UNIT_SIZE, 0, i*UNIT_SIZE, HEIGHT);
-		}
-		for(int i = 0; i < WIDTH/UNIT_SIZE; i++) {
-			g.drawLine(0, i*UNIT_SIZE, WIDTH, i*UNIT_SIZE);
-		}
-		g.setColor(new Color(255, 95, 158));
-		g.fillOval(foodX, foodY, UNIT_SIZE, UNIT_SIZE);
-		
-		for (int i = 0; i < bodyParts; i++) {
-			if (i == 0) {
-				g.setColor(new Color(233, 0, 100));
-				g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
-			} else {
-				g.setColor(new Color(179, 0, 94));
-				g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
+		if (running) {
+			for(int i = 0; i < HEIGHT/UNIT_SIZE; i++) {
+				g.drawLine(i*UNIT_SIZE, 0, i*UNIT_SIZE, HEIGHT);
 			}
+			for(int i = 0; i < WIDTH/UNIT_SIZE; i++) {
+				g.drawLine(0, i*UNIT_SIZE, WIDTH, i*UNIT_SIZE);
+			}
+			g.setColor(new Color(255, 95, 158));
+			g.fillOval(foodX, foodY, UNIT_SIZE, UNIT_SIZE);
+			
+			for (int i = 0; i < bodyParts; i++) {
+				if (i == 0) {
+					g.setColor(new Color(233, 0, 100));
+					g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
+				} else {
+					g.setColor(new Color(179, 0, 94));
+					g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
+				}
+			}
+		} else {
+			gameOver(g);
 		}
 		
 	}
@@ -91,7 +97,11 @@ public class GamePanel extends JPanel implements ActionListener{
 		}
 	}
 	public void checkFood() {
-		
+		if(x[0] == foodX && y[0] == foodY) {
+			bodyParts++;
+			foodEaten++;
+			generateFood();
+		}
 	}
 	public void checkCollision() {
 		//check if head collides with the body
@@ -105,7 +115,7 @@ public class GamePanel extends JPanel implements ActionListener{
 			running = false;
 		}
 		//check if head touch right border
-		if(x[0] > WIDTH) {
+		if(x[0] >= WIDTH) {
 			running = false;
 		}
 		//check if head touch top border
@@ -113,12 +123,19 @@ public class GamePanel extends JPanel implements ActionListener{
 			running = false;
 		}
 		//check if head touch bottom border
-		if(y[0] > HEIGHT) {
+		if(y[0] >= HEIGHT) {
 			running = false;
+		}
+		if(!running) {
+			timer.stop();
 		}
 	}
 	public void gameOver(Graphics g) {
-		
+		//game over text
+		g.setColor(Color.red);
+		g.setFont(new Font("Ink Free", Font.BOLD, 75));
+		FontMetrics metrics = getFontMetrics(g.getFont());
+		g.drawString("Game Over!", (WIDTH-metrics.stringWidth("Game Over!"))/2,HEIGHT/2);
 	}
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
@@ -134,7 +151,28 @@ public class GamePanel extends JPanel implements ActionListener{
 	public class MyKeyAdapter extends KeyAdapter{
 		@Override
 		public void keyPressed(KeyEvent e) {
-			
+			switch(e.getKeyCode()) {
+			case KeyEvent.VK_LEFT:
+				if(direction != 'R') {
+					direction = 'L';
+				}
+				break;
+			case KeyEvent.VK_RIGHT:
+				if(direction != 'L') {
+					direction = 'R';
+				}
+				break;
+			case KeyEvent.VK_UP:
+				if(direction != 'D') {
+					direction = 'U';
+				}
+				break;
+			case KeyEvent.VK_DOWN:
+				if(direction != 'U') {
+					direction = 'D';
+				}
+				break;
+			}
 		}
 	}
 	
