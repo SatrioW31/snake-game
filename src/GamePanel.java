@@ -22,8 +22,9 @@ public class GamePanel extends JPanel implements ActionListener{
 	int bodyParts = 5;
 	int foodX;
 	int foodY;
-	char direction = 'R';
+	char direction = 'D';
 	boolean running = false;
+	boolean gameOver;
 	Timer timer;
 	Random random;
 	ScorePanel scorePanel;
@@ -35,11 +36,13 @@ public class GamePanel extends JPanel implements ActionListener{
 		this.setBackground(new Color(6, 0, 71));
 		this.setFocusable(true);
 		this.addKeyListener(new MyKeyAdapter());
+		for(int i = 0; i < bodyParts; i++) {
+			y[i] = ((int)(HEIGHT/2))/UNIT_SIZE*UNIT_SIZE;
+		}
 		start();
 	}
 	public void start() {
 		generateFood();
-		running = true;
 		timer = new Timer(DELAY, this);
 		timer.start();
 	}
@@ -52,18 +55,15 @@ public class GamePanel extends JPanel implements ActionListener{
 	}
 	public void draw(Graphics g) {
 		
-		if (running) {
-			/*
-			for(int i = 0; i < HEIGHT/UNIT_SIZE; i++) {
-				g.drawLine(i*UNIT_SIZE, 0, i*UNIT_SIZE, HEIGHT);
+		if(gameOver) {
+			gameOver(g);
+		} else {
+			if(running) {
+				g.setColor(Color.PINK);
+				g.fillOval(foodX, foodY, UNIT_SIZE, UNIT_SIZE);
 			}
-			for(int i = 0; i < WIDTH/UNIT_SIZE; i++) {
-				g.drawLine(0, i*UNIT_SIZE, WIDTH, i*UNIT_SIZE);
-			}*/
-			g.setColor(Color.PINK);
-			g.fillOval(foodX, foodY, UNIT_SIZE, UNIT_SIZE);
 			
-			for (int i = 0; i < bodyParts; i++) {
+			for (int i = bodyParts - 1; i >= 0; i--) {
 				if (i == 0) {
 					g.setColor(new Color(233, 0, 100));
 					g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
@@ -72,8 +72,13 @@ public class GamePanel extends JPanel implements ActionListener{
 					g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
 				}
 			}
-		} else {
-			gameOver(g);
+			
+			if (!running) {
+				g.setColor(new Color(255, 95, 158));
+				g.setFont(new Font("Ink Free", Font.BOLD, 30));
+				FontMetrics metrics = getFontMetrics(g.getFont());
+				g.drawString("Move the snake to start!", (WIDTH-metrics.stringWidth("Move the snake to start!"))/2,HEIGHT/2);
+			}
 		}
 		
 	}
@@ -114,25 +119,30 @@ public class GamePanel extends JPanel implements ActionListener{
 		for (int i = bodyParts; i > 0; i--) {
 			if (x[i] == x[0] && y[i] == y[0]) {
 				running = false;
+				gameOver = true;
 			}
 		}
 		//check if head touch left border
 		if(x[0] < 0) {
 			running = false;
+			gameOver= true;
 		}
 		//check if head touch right border
 		if(x[0] >= WIDTH) {
 			running = false;
+			gameOver= true;
 		}
 		//check if head touch top border
 		if(y[0] < 0) {
 			running = false;
+			gameOver = true;
 		}
 		//check if head touch bottom border
 		if(y[0] >= HEIGHT) {
 			running = false;
+			gameOver = true;
 		}
-		if(!running) {
+		if(!running || gameOver == true) {
 			timer.stop();
 		}
 	}
@@ -160,21 +170,25 @@ public class GamePanel extends JPanel implements ActionListener{
 		public void keyPressed(KeyEvent e) {
 			switch(e.getKeyCode()) {
 			case KeyEvent.VK_LEFT:
+				running = true;
 				if(direction != 'R') {
 					direction = 'L';
 				}
 				break;
 			case KeyEvent.VK_RIGHT:
+				running = true;
 				if(direction != 'L') {
 					direction = 'R';
 				}
 				break;
 			case KeyEvent.VK_UP:
+				running = true;
 				if(direction != 'D') {
 					direction = 'U';
 				}
 				break;
 			case KeyEvent.VK_DOWN:
+				running = true;
 				if(direction != 'U') {
 					direction = 'D';
 				}
