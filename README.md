@@ -38,7 +38,7 @@ What things you need to install the software and how to install them:
 ## Built With
 
 - [Java](https://java.com/en/) - The programming language used
-- [Eclipse](https://eclipse.org/) / [IntelliJ IDEA](https://www.jetbrains.com/idea/) - The IDE used
+- [Eclipse](https://eclipse.org/) - The IDE used
 
 ## Authors
 
