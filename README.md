@@ -46,5 +46,5 @@ What things you need to install the software and how to install them:
 
 ## License
 
-This project is licensed under the MIT License -- see the [LICENSE]() file for details.
+This project is licensed under the MIT License -- see the [LICENSE](LICENSE.md) file for details.
 
