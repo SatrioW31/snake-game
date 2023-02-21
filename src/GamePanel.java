@@ -113,7 +113,7 @@ public class GamePanel extends JPanel implements ActionListener{
 				g.setColor(new Color(255, 95, 158));
 				g.setFont(new Font("Ink Free", Font.BOLD, 30));
 				FontMetrics metrics = getFontMetrics(g.getFont());
-				g.drawString("Move the snake to start!", (WIDTH - metrics.stringWidth("Move the snake to start!")) / 2, HEIGHT / 2);
+				g.drawString("Move the Snake to Start!", (WIDTH - metrics.stringWidth("Move the Snake to Start!")) / 2, HEIGHT / 2);
 			}
 		}
 	}
@@ -206,9 +206,9 @@ public class GamePanel extends JPanel implements ActionListener{
 	public void gameOver(Graphics g) {
 		//game over text
 		g.setColor(new Color(255, 95, 158));
-		g.setFont(new Font("Ink Free", Font.BOLD, 75));
+		g.setFont(new Font("Ink Free", Font.BOLD, 30));
 		FontMetrics metrics = getFontMetrics(g.getFont());
-		g.drawString("Game Over!", (WIDTH-metrics.stringWidth("Game Over!"))/2,HEIGHT/2);
+		g.drawString("Game Over! Press SPACE to Restart", (WIDTH-metrics.stringWidth("Game Over! Press SPACE to Restart"))/2,HEIGHT/2);
 	}
 	
 	@Override
@@ -251,8 +251,27 @@ public class GamePanel extends JPanel implements ActionListener{
 					direction = 'D';
 				}
 				break;
+			case KeyEvent.VK_SPACE:
+				if(gameOver == true) {
+					gameOver=false;
+					reinitializeFields();
+					start();
+				}
+				break;
 			}
 		}
+	}
+	
+	private void reinitializeFields() {
+		foodEaten = 0;
+		for (int i = 0; i < GAME_UNITS; i++) {
+			x[i] = 0;
+			y[i] = 0;
+		}
+		for(int i = 0; i < bodyParts; i++) {
+			y[i] = ((int)(HEIGHT/2))/UNIT_SIZE*UNIT_SIZE;
+		}
+		bodyParts = 5;
 	}
 	
 }
